@@ -30,9 +30,8 @@ bool Game::Init()
 		keys[i] = KEY_IDLE;
 
 	//Init variables
-	Player.Init(20, WINDOW_HEIGHT >> 1, 50, 20, 5);
-	idx_shot = 0;
-	loadedSurface[0] = IMG_Load("spaceship.png");
+	loadedSurface[0] = IMG_Load("Link Espalda.png");
+	Link.Init((WINDOW_WIDTH/2)-(loadedSurface[0]->w / 2), (WINDOW_HEIGHT - (loadedSurface[0]->h)) , loadedSurface[0]->w, loadedSurface[0]->h, 5);
 	if (loadedSurface[0] == NULL) {
 		SDL_GetError();
 	}
@@ -100,42 +99,32 @@ bool Game::Update()
 	if (!Input())	return true;
 
 	int x, y, w, h;
-	Player.GetRect(&x, &y, &w, &h);
+	Link.GetRect(&x, &y, &w, &h);
 
 	//Process Input
 	int fx = 0, fy = 0;
 	if (keys[SDL_SCANCODE_ESCAPE] == KEY_DOWN)	return true;
-	if (keys[SDL_SCANCODE_UP] == KEY_REPEAT && Player.GetY() > 1)	fy = -1;
-	if (keys[SDL_SCANCODE_DOWN] == KEY_REPEAT && (Player.GetY() + 82) < WINDOW_HEIGHT - 1)	fy = 1;
-	if (keys[SDL_SCANCODE_LEFT] == KEY_REPEAT && Player.GetX() > 1)	fx = -1;
-	if (keys[SDL_SCANCODE_RIGHT] == KEY_REPEAT && (Player.GetX() + 104) < WINDOW_WIDTH - 1)	fx = 1;
+	if (keys[SDL_SCANCODE_UP] == KEY_REPEAT && Link.GetY() > 1)	fy = -1;
+	if (keys[SDL_SCANCODE_DOWN] == KEY_REPEAT && (Link.GetY() + h) < WINDOW_HEIGHT - 1)	fy = 1;
+	if (keys[SDL_SCANCODE_LEFT] == KEY_REPEAT && Link.GetX() > 1)	fx = -1;
+	if (keys[SDL_SCANCODE_RIGHT] == KEY_REPEAT && (Link.GetX() + w) < WINDOW_WIDTH - 1)	fx = 1;
 	if (keys[SDL_SCANCODE_SPACE] == KEY_DOWN)
 	{
-		if (!Player.shoot) {
-			Shots[idx_shot].Init(x + w - 10, y + (h >> 1) , 20, 10, 10);
-			Player.shoot = true;
+		if (!Link.shoot) {
+			
+			Link.shoot = true;
 		}
 		else {
-			Shots[idx_shot].Init(x + w - 10, y + h*4 - 15, 20, 10, 10);
-			Player.shoot = false;
+			
+			Link.shoot = false;
 		}
-		
-		idx_shot++;
-		idx_shot %= MAX_SHOTS;
 	}
 
 	//Logic
-	//Player update
-	Player.Move(fx, fy);
+	//Link update
+	Link.Move(fx, fy);
 	//Shots update
-	for (int i = 0; i < MAX_SHOTS; ++i)
-	{
-		if (Shots[i].IsAlive())
-		{
-			Shots[i].Move(1, 0);
-			if (Shots[i].GetX() > WINDOW_WIDTH)	Shots[i].ShutDown();
-		}
-	}
+	
 
 	BG[1].x-= 8;
 	BG[0].x-= 8;
@@ -160,23 +149,14 @@ void Game::Draw()
 	SDL_RenderCopy(Renderer, imgT[2], NULL, &BG[0]);
 	SDL_RenderCopy(Renderer, imgT[2], NULL, &BG[1]);
 
-	//Draw player
+	//Draw Link
 	SDL_Rect rc;
-	Player.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
-	rc.w = 104;
-	rc.h = 82;
+	Link.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
 	SDL_RenderCopy(Renderer, imgT[0], NULL, &rc);
 	
 	//Draw shots
 	//SDL_SetRenderDrawColor(Renderer, 192, 0, 0, 255);
-	for (int i = 0; i < MAX_SHOTS; ++i)
-	{
-		if (Shots[i].IsAlive())
-		{
-			Shots[i].GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
-			SDL_RenderCopy(Renderer, imgT[1], NULL, &rc);
-		}
-	}
+	
 
 	//Update screen
 	SDL_RenderPresent(Renderer);

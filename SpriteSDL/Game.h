@@ -30,11 +30,10 @@ private:
 	SDL_Window *Window;
 	SDL_Renderer *Renderer;
 
-	Entity Player, Shots[MAX_SHOTS];
-	int idx_shot;
+	Entity Link, Sword;
 
 	enum KEY_STATE { KEY_IDLE, KEY_DOWN, KEY_REPEAT, KEY_UP	};
-	KEY_STATE keys[MAX_KEYS]; 
+	KEY_STATE keys[MAX_KEYS];
 	SDL_Surface* loadedSurface[3];
 	SDL_Texture* imgT[3];
 	SDL_Rect BG[2];

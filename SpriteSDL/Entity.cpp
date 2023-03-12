@@ -17,6 +17,7 @@ void Entity::Init(int posx, int posy, int w, int h, int s)
 	speed = s;
 	is_alive = true;
 	shoot = true;
+	lives = 3;
 }
 void Entity::GetRect(int *posx, int *posy, int *w, int *h)
 {
@@ -46,4 +47,12 @@ void Entity::Move(int dx, int dy)
 {
 	x += dx * speed;
 	y += dy * speed;
+}
+
+void Entity::hit()
+{
+	lives--;
+	if (lives <= 0) {
+		is_alive = false;
+	}
 }

@@ -13,12 +13,14 @@ public:
 	bool IsAlive();
 	void Move(int dx, int dy);
 	bool shoot;
+	void hit();
 
 private:
 	int x, y;
 	int width, height;
 	int speed;
 	bool is_alive;
+	int lives;
 	
 };
 
